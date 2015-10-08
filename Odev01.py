@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Thu Oct  8 20:46:41 2015
+
+@author: muratgoncu
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Tue Oct  6 21:10:56 2015
 
 @author: izel
@@ -230,6 +237,7 @@ print(histogram2indeks)
 plt.show()
 
 plt.hist()"""
+bins=[-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1, 0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 sum1 = 0
 
 for i in range(len(histogramindeks)):
@@ -241,4 +249,9 @@ for i in range(len(histogramindeks)):
                 else:
                     sum1 = sum1 + histogramindeks[i] * (i-j)
         
-print(sum1)
+print "Distance:" ,(sum1)
+
+plot = plt.subplot(111)
+plot.bar(bins, histogramindeks,  width=1, color = 'g') 
+plot.bar(bins, histogram2indeks, width=1, color = 'r') 
+plt.show()
