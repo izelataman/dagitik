@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Oct  8 20:46:41 2015
 
-@author: muratgoncu
-"""
 
 # -*- coding: utf-8 -*-
 """
