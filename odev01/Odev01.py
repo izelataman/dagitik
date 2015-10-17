@@ -250,3 +250,5 @@ plot = plt.subplot(111)
 plot.bar(bins, histogramindeks,  width=1, color = 'g') 
 plot.bar(bins, histogram2indeks, width=1, color = 'r') 
 plt.show()
+
+commit changes??
