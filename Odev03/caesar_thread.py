@@ -12,9 +12,9 @@ import threading
 import Queue
 import time
 
+s = int(input("sifreleme icin kac tane kaydiralim: "))
 n = int(input("thread sayisi: "))
 l = int(input("kac karakter: "))
-s = int(input("sifreleme icin kac tane kaydiralim: "))
 
 alfabe = list("abcdefghijklmnopqrstuvwxyz")
 anahtar = [None]*26
@@ -51,7 +51,7 @@ def process_data(threadName, q):
                 else:
                     sifre += data[i]
                     
-            fk =  open("C:\Users\Toshiba-PC\Desktop\Dagitik\sifre.txt","a")
+            fk =  open("C:\Users\Toshiba-PC\Desktop\Dagitik\crypted_"+str(s)+"_"+str(n)+"_"+str(l)+".txt","a+")
             fk.write(sifre)
             fk.close()
                 
