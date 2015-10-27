@@ -7,6 +7,7 @@ Created on Tue Oct 27 13:17:23 2015
 import socket
 import threading
 import time
+import sys
 
 class myThread (threading.Thread):
     def __init__(self, threadID, clientSocket, clientAddr):
@@ -43,7 +44,16 @@ while True:
     thread.start()
     threads.append(thread)
     threadCounter += 1
-
+    while True:
+        output = clientSocket.recv(2048);
+        """ if output.strip() == "disconnect":
+            
+            sys.exit("Received disconnect message.  Shutting down.")
+            clientSocket.send("ack")"""
+        if output:
+            print "Message received from client:"
+            print output
+            clientSocket.send("PEKI")
     for t in threads: 
         t.join()
     print "Exiting Main Thread \n"
