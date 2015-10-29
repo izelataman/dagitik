@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+Created on Tue Oct 27 13:17:23 2015
 
+@author: Toshiba-PC
+"""
 import socket
 import threading
 import time
@@ -18,7 +22,6 @@ class myThread (threading.Thread):
 def todo(clientSocket,clientAddr):
     print 'todo yu cagirdi'
     tLock.acquire()
-    clientSocket.send('Merhaba, saat şu an 15,15')
     while True:
         output = clientSocket.recv(2048);
         if output.strip() == "disconnect":
