@@ -18,22 +18,24 @@ class myThread (threading.Thread):
         self.clientSocket = clientSocket
         self.clientAddr = clientAddr
     def run(self):
-        print "Starting Thread-" + str(self.threadID)
+        #print "Starting Thread-" + str(self.threadID)
         todo(self.clientSocket, self.clientAddr)
-        print "Ending Thread-" + str(self.threadID)
+        #print "Ending Thread-" + str(self.threadID)
     
 def todo(clientSocket,clientAddr):
-    print 'todo yu cagirdi'
+    #print 'todo yu cagirdi'
     clientSocket.send("Welcome")
     tLock.acquire()
     while True:
+        output = clientSocket.recv(2048)
         r = random.randint(2,120)
         print r
-        if(r % 5 == 0):
+        if(r % 5 == 0) and output.strip() != "disconnect" :
             clientSocket.send("Su an saat: ")
-        output = clientSocket.recv(2048);
-        if output.strip() == "disconnect":
-            clientSocket.close()
+
+        elif output.strip() == "disconnect":
+            clientSocket.send("dis")
+            #clientSocket.close()
             return 0
         elif output:
             print "Message received from client:"
@@ -62,4 +64,4 @@ while True:
     threadCounter += 1
     for t in threads: 
         t.join()
-    print "Exiting Main Thread \n"
+    print "Good bye \n"
