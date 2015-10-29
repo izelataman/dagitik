@@ -18,11 +18,11 @@ class readThread (threading.Thread):
         self.clientSocket = clientSocket
         self.clientAddr = clientAddr
     def run(self):
-         print "Starting readThread " + str(self.threadID)
+         #print "Starting readThread " + str(self.threadID)
          tLock.acquire()
          print s.recv(1024)
          tLock.release()         
-         print "Exiting readThread" + str(self.threadID) 
+         #print "Exiting readThread" + str(self.threadID) 
 
 
 class writeThread (threading.Thread):
@@ -32,23 +32,23 @@ class writeThread (threading.Thread):
         self.clientSocket = clientSocket
         self.clientAddr = clientAddr
     def run(self):
-         print "Starting writeThread " + self.name
+         #print "Starting writeThread " + self.name
          tLock.acquire()
          while True:
             for index in xrange(15):
                 data = raw_input("zzzz:")
                 s.send(data)
                 msg = s.recv(2048)
-                if msg != "ok" and msg != "Su an saat: " :
+                if msg == "dis":
                     print "Disconnecting"
                     s.close()
                     sys.exit("Received disconnect message.  Shutting down.")
                 elif msg == "Su an saat: ":
                     print "Su an saat: " + time.strftime("%H:%M:%S")
-                    
-                print "PEKI" + "    <" + str(host) + ">"
+                elif msg == "ok":
+                    print "PEKI" + "    <" + str(host) + ">"
                
-         print "Exiting writeThread " + self.name 
+         #print "Exiting writeThread " + self.name 
          tLock.release()
          time.sleep(1)
          
