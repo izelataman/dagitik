@@ -53,17 +53,12 @@ class ReadThread (threading.Thread):
         data = data.strip()
         # henuz login olmadiysa
         #if not self.nickname and not data[0:3] == "USR":
-            
-        # data sekli bozuksa
-        """if ...
-            response = "ERR"
-            self.csend(response)
-            return 0"""
         if data[0:3] == "USR":
             nickname = data[4:]
             if(self.fihrist.has_key(nickname) == False):
                 # kullanici yoksa
                 response = "HEL " + nickname
+                self.csend(response)
                 # fihristi guncelle
                 self.fihrist.update({nickname:self.tQueue})
                 self.lQueue.put(self.nickname + " has joined.")
@@ -75,25 +70,23 @@ class ReadThread (threading.Thread):
                 # baglantiyi kapat
                 self.csoc.close()
                 return 1
-        """elif data[0:3] == "QUI":
+        elif data[0:3] == "QUI":
             response = "BYE " + self.nickname
-            ...
-            ...
+            self.csend(response)
             # fihristten sil
-            ...
-            ...
+            del self.fihrist[nickname]
             # log gonder
-            ...
+            self.lQueue.put(self.nickname + " has left.")
             # baglantiyi sil
-            ...
-        ..."""
+             
         elif data[0:3] == "LSQ":
             response = "LSA "
             ...
             ...
         elif data[0:3] == "TIC":
-            ...
-            ...
+            response = "TOC"
+            self.csend(response)
+            return 1
         elif data[0:3] == "SAY":
             ...
             ...
@@ -112,9 +105,8 @@ class ReadThread (threading.Thread):
         else:
             # bir seye uymadiysa protokol hatasi verilecek
             response = "ERR"
-            ...
-            ...
-            ...
+            self.csend(response)
+            return 0
         
     def run(self):
         print "Starting readThread " + self.name
