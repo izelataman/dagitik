@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Created on Sun Dec 13 20:18:48 2015
 
@@ -111,7 +112,7 @@ class WorkerThread (threading.Thread):
             
         return (header, newMessage)
 
-    """def filterGaussian(self, header, patch, threshold):
+    def filterGaussian(self, header, patch, threshold):
         newMessage = [0] * self.patchsize * self.patchsize
         for i in range(1, self.patchsize-1):
             for j in range(1, self.patchsize-1):
@@ -119,24 +120,20 @@ class WorkerThread (threading.Thread):
                 index1 = (j+1) * self.patchsize + i # same line index
                 index1r = (j-1) * self.patchsize + i # bottom line index
                 newMessage[index0] = \
-                    + 0.0625* patch[index1r - 1] \
-                    + 0.125* patch[index1r] \
-                    + 0.0625* patch[index1r + 1] \
-                    + 0.125* patch[index0 - 1] \
-                    + 0.25* patch[index0] \
-                    + 0.125* patch[index0 + 1] \
-                    + 0.0625* patch[index1 - 1] \
-                    + 0.125* patch[index1] \
-                    + 0.0625* patch[index1 + 1]
+                    + 1* patch[index1r - 1] \
+                    + 1* patch[index1r + 1] \
+                    + 4* patch[index0] \
+                    + 1* patch[index1 - 1] \
+                    + 1* patch[index1 + 1]
                     
                 newMessage[index0] = int(newMessage[index0])
-        return (header, newMessage)"""
-    def filterGaussian(self, header, patch, threshold):
+        return (header, newMessage)
+    """def filterGaussian(self, header, patch, threshold):
         newMessage = [0] * self.patchsize * self.patchsize
         for i in range(1, self.patchsize * self.patchsize):
             #newMessage[i] =  (1/math.sqrt(2*3.14*10*10)) * math.exp((-(patch[i] ** 2) / 2* 10* 10)) 
             newMessage[i] =int( 1 / (2*math.pi*10**-10**2 )* math.exp(-(patch[i]**2 / 2*10**-10**2)) )
-        return (header, newMessage)
+        return (header, newMessage)"""
 
 
     def run(self):
