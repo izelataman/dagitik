@@ -21,8 +21,8 @@ class negotiatorServerThread (threading.Thread):
         print "hello server thread basladi"
         self.socket.bind((self.ip, self.port))
         self.socket.listen(5)
+        print "Waiting for connection"
         while True:
-            print "Waiting for connection"
             clientSocket, clientAddr = self.socket.accept()
             print 'Got a connection from ', clientAddr
             connQueue.put(clientSocket)
@@ -37,9 +37,9 @@ class negotiatorServerThread (threading.Thread):
             serverRecieveMessage = negotiatorServerRecieveMessage(clientSocket, clientAddr, CONNECT_POINT_LIST, messageQueue2, messageQueue1)
             serverRecieveMessage.start()
             
-            serverRecieveMessage.join()
-            serverSendMessage.join()
-            clientThread.join()
+            #serverRecieveMessage.join()
+            #serverSendMessage.join()
+            #clientThread.join()
 class negotiatorServerSendMessage(threading.Thread):
     #answer: REGWA to peer client 
     def __init__(self, cSocket, cAddr, CPlist,sQueue): 
@@ -69,12 +69,22 @@ class negotiatorServerRecieveMessage(threading.Thread):
     def serverParser(self,fulldata):
         data = fulldata.split(" ")
         if data[0] == "REGME":
-            self.sQueue.put("REGWA")
+            self.sQueue.put("REGWA \n")
             self.cQueue.put("HELLO")          
-            dataAddr = data[0].split(":")
-            self.CPlist[dataAddr[0], dataAddr[1]] = ("?","W")
+            dataAddr = data[1].split(":")
+            #Nself.CPlist[dataAddr[0], dataAddr[1]] = ("?","W")
         elif data[0] == "GETNL":
             self.sQueue.put("NLIST BEGIN:")
+            s = []
+            m = []
+            mssg = ""
+            for i in range(len(CONNECT_POINT_LIST)):
+                s = CONNECT_POINT_LIST.keys()[i]
+                m = CONNECT_POINT_LIST.values()[i]
+                mssg = str(s) + ":" + str(m)
+                self.sQueue.put(mssg)
+                #print mssg
+            self.sQueue.put("NLIST END:")
         else:
             print "elelel"
             #self.sQueue.put("hadi bakalim")
@@ -98,7 +108,9 @@ class negotiatorClientThread (threading.Thread):
         print "hello ben istemci"
         clientSocket = connQueue.get()
         clientAddr = connQueue.get()
-        
+        #print "NegoClient Receive in dinledigi ve mesaj yoolladigiport:"
+        #print clientSocket
+        #print clientAddr
         clientReceiveMessage = negotiatorClientRecieveMessage(clientSocket, clientAddr, CONNECT_POINT_LIST)
         clientReceiveMessage.start()
         
@@ -126,7 +138,7 @@ class negotiatorClientSendMessage(threading.Thread):
         while True:
             if self.cQueue.qsize() > 0:
                 message = self.cQueue.get()
-                self.socket.send(message)
+                self.cSocket.send(message)
 class negotiatorClientRecieveMessage(threading.Thread):
     #SALUT
     #BUBYE
@@ -136,17 +148,21 @@ class negotiatorClientRecieveMessage(threading.Thread):
         self.cAddr = cAddr
         self.CPlist = CPlist
     def clientParser(self,fulldata):
+        print fulldata
         data = fulldata.split(" ")
         if(data[0]=="SALUT"):
             if (data[1]=="P"):
-                self.CPlist[self.cSocket,self.cAddr] = ("P", "S")
+                self.CPlist[self.cAddr] = ("P", "S")
             if (data[1]=="N"):
-                self.CPlist[self.cSocket,self.cAddr] = ("N", "S")
+                self.CPlist[self.cAddr] = ("N", "S")
         elif(data[0] == "BUBYE"):
             self.cSocket.close()
             sys.exit("Received disconnect message.  Shutting down.")
         else:
             print "ellele"
+        print "conn.point list ::::\n" 
+        print CONNECT_POINT_LIST
+        
     def run(self):
         print "negoClient mesajalma threadi basladi"
         while True:
@@ -160,10 +176,10 @@ connQueue = Queue.Queue(10)
 s = socket.socket()
 host = "127.0.0.1"
 port = 12354
-hostserver = "0.0.0.0"
-serverThread = negotiatorServerThread(hostserver, port, s, messageQueue2)
-serverThread.start()
-serverThread.join()
+while True:
+    serverThread = negotiatorServerThread(host, port, s, messageQueue2)
+    serverThread.start()
+    serverThread.join()
     
    
     
