@@ -58,6 +58,7 @@ class peerServerReceiveMessage(threading.Thread):
         self.sQueue = sQueue
     def parser(self,fulldata):
         if fulldata == "HELLO":
+            print "HELLO"
             self.sQueue.put("SALUT P")
         if fulldata == "CLOSE":
             self.sQueue.put("BUBYE")
@@ -65,6 +66,7 @@ class peerServerReceiveMessage(threading.Thread):
         print "peerServer mesajalma threadi basladi"
         while True:
             fulldata = self.socket.recv(1024)
+            self.parser(fulldata)
             print fulldata
         
 class peerClientThread (threading.Thread):
@@ -75,7 +77,7 @@ class peerClientThread (threading.Thread):
         self.socket = socket        
     def run(self):
         print "peerClient threadi basladi"
-        clientReceiveMessage = peerClientReceiveMessage(host, port, s)
+        clientReceiveMessage = peerClientReceiveMessage(host, port, s, messageQueue1)
         clientReceiveMessage.start()
         
         clientSendMessage = peerClientSendMessage(host, port, s, messageQueue1)
@@ -101,15 +103,23 @@ class peerClientSendMessage(threading.Thread):
                 self.socket.send(data)
 
 class peerClientReceiveMessage(threading.Thread):
-    def __init__(self, ip, port, socket):
+    def __init__(self, ip, port, socket, sQueue):
         threading.Thread.__init__(self)
         self.ip = ip
         self.port = port
-        self.socket = socket       
+        self.socket = socket
+        self.sQueue = sQueue
+    def parser(self,fulldata):
+        if fulldata == "HELLO":
+            print fulldata
+            self.sQueue.put("SALUT P")
+        if fulldata == "CLOSE":
+            self.sQueue.put("BUBYE")
     def run(self):
         print "peerClient mesajalma threadi basladi"
         while True:
             fulldata = self.socket.recv(1024)
+            self.parser(fulldata)
             print fulldata
         
 
