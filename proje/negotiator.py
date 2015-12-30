@@ -70,9 +70,7 @@ class negotiatorServerRecieveMessage(threading.Thread):
         data = fulldata.split(" ")
         if data[0] == "REGME":
             self.sQueue.put("REGWA \n")
-            self.cQueue.put("HELLO")          
-            dataAddr = data[1].split(":")
-            #Nself.CPlist[dataAddr[0], dataAddr[1]] = ("?","W")
+            self.cQueue.put("HELLO")
         elif data[0] == "GETNL":
             self.sQueue.put("NLIST BEGIN:")
             s = []
@@ -86,8 +84,8 @@ class negotiatorServerRecieveMessage(threading.Thread):
                 #print mssg
             self.sQueue.put("NLIST END:")
         else:
-            print "elelel"
-            #self.sQueue.put("hadi bakalim")
+            #print "elelel"
+            self.sQueue.put("YANLIS MESAJ")
     def run(self):
         print "negoServer mesajalma threadi basladi"
         while True:
@@ -111,7 +109,7 @@ class negotiatorClientThread (threading.Thread):
         #print "NegoClient Receive in dinledigi ve mesaj yoolladigiport:"
         #print clientSocket
         #print clientAddr
-        clientReceiveMessage = negotiatorClientRecieveMessage(clientSocket, clientAddr, CONNECT_POINT_LIST)
+        clientReceiveMessage = negotiatorClientRecieveMessage(clientSocket, clientAddr, CONNECT_POINT_LIST, messageQueue1)
         clientReceiveMessage.start()
         
         clientSendMessage = negotiatorClientSendMessage(host, port, s, clientSocket, clientAddr, CONNECT_POINT_LIST, messageQueue2)
@@ -142,25 +140,28 @@ class negotiatorClientSendMessage(threading.Thread):
 class negotiatorClientRecieveMessage(threading.Thread):
     #SALUT
     #BUBYE
-    def __init__(self, cSocket, cAddr, CPlist):
+    def __init__(self, cSocket, cAddr, CPlist, sQueue):
         threading.Thread.__init__(self)
         self.cSocket = cSocket
         self.cAddr = cAddr
-        self.CPlist = CPlist
+        self.CPlist = CPlist 
+        self.sQueue = sQueue
     def clientParser(self,fulldata):
-        print fulldata
         data = fulldata.split(" ")
         if(data[0]=="SALUT"):
+            print fulldata
             if (data[1]=="P"):
                 self.CPlist[self.cAddr] = ("P", "S")
+                print "Yeni bir peer eklendi"
             if (data[1]=="N"):
                 self.CPlist[self.cAddr] = ("N", "S")
         elif(data[0] == "BUBYE"):
             self.cSocket.close()
             sys.exit("Received disconnect message.  Shutting down.")
         else:
-            print "ellele"
-        print "conn.point list ::::\n" 
+            #print "ellele"            
+            self.sQueue.put("YANLIS MESAJ")
+        print "conn.point list :  " 
         print CONNECT_POINT_LIST
         
     def run(self):
